@@ -33,13 +33,14 @@ enum eDirection{
 eDirection dir;
 int main(int argc, char **argv)
 {
+	system("cls");
 	Setup();
 	while(!gameOver)
 	{
 		Draw();
 		Input();
 		Logic();
-	    Sleep(180);
+	    Sleep(100);
 	}
 	return 0;
 }
@@ -61,14 +62,14 @@ void Setup()
 void Draw()
 {
 	// Clear the screen
-	system("cls");
-	// HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
-	// COORD Position;
+	//system("cls");
+	HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+	COORD Position;
 	
-	// Position.X = 0;
-	// Position.Y = 0;
+	Position.X = 0;
+	Position.Y = 0;
 	
-	// SetConsoleCursorPosition(hOut, Position);
+	SetConsoleCursorPosition(hOut, Position);
 	// Print top wall 
 	for(int i = 0; i < width + 2; i++)
 		cout<<"#";
@@ -124,15 +125,35 @@ void Input()
 		switch(key)
 		{
 			case 'a':
+				if(lentail > 0)
+				{
+				if(dir == RIGHT)
+					break;
+				}
 				dir = LEFT;
 				break;
 			case 'd':
+				if(lentail > 0)
+				{
+				if(dir == LEFT)
+					break;
+				}
 				dir = RIGHT;
 				break;
 			case 'w': 
+				if(lentail > 0)
+				{
+				if(dir == DOWN)
+					break;
+				}
 				dir = UP;
 				break;
 			case 's':
+				if(lentail > 0)
+				{
+				if(dir == UP)
+					break;
+				}
 				dir = DOWN;
 				break;
 			case 'x':
@@ -180,6 +201,24 @@ void Logic()
 	if(x >= width || x < 0 || y >= height || y < 0)
 	{
 		//gameOver = true;
+	}
+	if(x >= width)
+		x = 0;
+	else if(x < 0) 
+		x = width - 1;
+	if(y >= height)
+		y = 0;
+	else if(y < 0) 
+		y = height - 1;
+	
+	// Check if there is collision between head and tail 
+	// Loop through all tail segments 
+	for(int i = 0; i < lentail; i++)
+	{
+		if(tailX[i] == x && tailY[i] == y)
+		{
+			gameOver = true;
+		}
 	}
 	if(x == fruitX && y == fruitY)
 	{
