@@ -15,10 +15,14 @@ const int height = 20;
 int x,y;
 // Fruit position coordinates
 int fruitX, fruitY;
+// Tail
+int tailX[100], tailY[100];
+// Length of the tail
+int lentail;
 // Score variable
 int score;
 // Enum to track direction
-enum eDirection{
+enum eDirection{ 
 	STOP = 0,
 	LEFT,
 	RIGHT,
@@ -35,7 +39,7 @@ int main(int argc, char **argv)
 		Draw();
 		Input();
 		Logic();
-	    Sleep(50);
+	    Sleep(180);
 	}
 	return 0;
 }
@@ -66,33 +70,43 @@ void Draw()
 	
 	// SetConsoleCursorPosition(hOut, Position);
 	// Print top wall 
-	for(int i = 0; i <= width; i++)
+	for(int i = 0; i < width + 2; i++)
 		cout<<"#";
 	cout<<endl;
 	// Print side walls
-	for(int i = 0; i <= height; i++)
+	for(int i = 0; i < height; i++)
 	{
-		for(int j = 0; j <= width; j++)
+		for(int j = 0; j < width; j++)
 		{
-			if(j == 0 || j == width)
+			if(j == 0)
 				cout<<"#";
 			// Printing the head 
 			if( i == y && j == x)
-			{
 				cout<<"O";
-			}
-			else if( i == fruitY && j == fruitX)
-			{
+			else if(i == fruitY && j == fruitX)
 				cout<<"F";
-			}
 			else 
-				cout<<" ";
+			{
+				bool print = false;
+				 for(int k = 0; k < lentail; k++)
+				 {
+					if(tailX[k] == j && tailY[k] == i)
+					{
+						 cout<<"o";
+						 print = true;
+					}
+				 }
+				if(!print)
+					cout<<" "; 
+			}
+			if(j == width - 1)
+				cout<<"#";		
 		}
 		cout<<endl;
 	}
 
 	// Print bottom wall
-	for(int i = 0; i <= width; i++)
+	for(int i = 0; i < width + 2; i++)
 		cout<<"#";
 	cout<<endl;
 	cout<<"HEAD X = "<<x<<" Y = "<<y<<endl;
@@ -130,6 +144,22 @@ void Input()
 }
 void Logic()
 {
+	// Previous x coordinate of the tail
+	int ptailX = tailX[0];
+	// Previous y coordinate of the tail
+	int ptailY = tailY[0];
+	int ptail2X, ptail2Y;
+	tailX[0] = x;
+	tailY[0] = y;
+	for(int i = 1; i < lentail; i++)
+	{
+		ptail2X = tailX[i];
+		ptail2Y = tailY[i];
+		tailX[i] = ptailX;
+		tailY[i] = ptailY;
+		ptailX = ptail2X;
+		ptailY = ptail2Y;
+	}
 	switch(dir)
 	{
 		case LEFT:
@@ -149,11 +179,12 @@ void Logic()
 	}
 	if(x >= width || x < 0 || y >= height || y < 0)
 	{
-		gameOver = true;
+		//gameOver = true;
 	}
 	if(x == fruitX && y == fruitY)
 	{
 		score++;
+		lentail++;
 		fruitX = rand() % width;
 		fruitY = rand() % height;
 	}
