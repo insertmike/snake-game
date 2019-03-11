@@ -1,6 +1,6 @@
 # Snake Game
 A command-line version of the snake game written in C++ .
-##Features
+## Features
 - Snake moves in all directions 
 - If snake eat a fruit its tail grows
 - Snake go through walls
