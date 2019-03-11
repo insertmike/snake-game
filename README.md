@@ -12,6 +12,10 @@ _Game is tested and written on Windows OS with the Microsoft Visual Studio Compi
 
    nmake main 
    
+###### To clear *.obj and *.exe files do:
+
+   nmake clean 
+
 ## How to play:
 Move snake with the following keyboard keys:
 
@@ -24,10 +28,6 @@ Move snake with the following keyboard keys:
 **D** - RIGHT 
 
 **X** - to exit 
-
-###### To clear *.obj and *.exe files do:
-
-nmake clean 
 
 ## ToDo
 - [ ] Rewrite logic function to not allow fruits to spawn on the snake
