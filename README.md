@@ -12,20 +12,20 @@ _Game is tested and written on Windows OS with the Microsoft Visual Studio Compi
 
    nmake main 
    
-###### How to play:
+## How to play:
 Move snake with the following keyboard keys:
 
-W - UP
+**W** - UP
 
-A - LEFT 
+**A** - LEFT 
 
-S - DOWN
+**S** - DOWN
 
-D - RIGHT 
+**D** - RIGHT 
 
-X - to exit 
+**X** - to exit 
 
-To clear *.obj and *.exe files do:
+###### To clear *.obj and *.exe files do:
 
 nmake clean 
 
