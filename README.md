@@ -2,7 +2,7 @@
 A command-line version of the snake game written in C++ .
 ## Features
 - Snake moves in all directions 
-- If snake eat a fruit its tail grows
+- If the snake eats a fruit its tail grows
 - Snake go through walls
 ## Build: 
 _Game is tested and written on Windows OS with the Microsoft Visual Studio Compiler_
