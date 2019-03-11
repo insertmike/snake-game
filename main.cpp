@@ -2,6 +2,7 @@
 #include <conio.h>
 #include <windows.h>
 #include <stdio.h>
+#include <time.h>
 using namespace std;
 void Setup();
 void Draw();
@@ -33,6 +34,7 @@ enum eDirection{
 eDirection dir;
 int main(int argc, char **argv)
 {
+	srand(time(0));
 	system("cls");
 	Setup();
 	while(!gameOver)
@@ -165,6 +167,7 @@ void Input()
 }
 void Logic()
 {
+
 	// Previous x coordinate of the tail
 	int ptailX = tailX[0];
 	// Previous y coordinate of the tail
