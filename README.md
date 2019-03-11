@@ -31,3 +31,6 @@ nmake clean
 
 ## ToDo
 - [ ] Rewrite logic function to not allow fruits to spawn on the snake
+- [ ] Add functionality for the user to choose the desired map ( matrix ) size
+- [ ] Add functionality for the user to change the speed of the snake 
+- [ ] Think about obstacles
