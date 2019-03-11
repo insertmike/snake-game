@@ -7,14 +7,27 @@ A command-line version of the snake game written in C++ .
 ## Build: 
 _Game is tested and written on Windows OS with the Microsoft Visual Studio Compiler_
 1. Open VS Developer Prompt 
+2. Go to game folder 
 2. Run nmake file:
+
    nmake main 
+   
 ###### How to play:
 Move snake with the following keyboard keys:
+
 W - UP
+
 A - LEFT 
+
 S - DOWN
+
 D - RIGHT 
+
 X - to exit 
-##Does not work ToDo
+
+To clear *.obj and *.exe files do:
+
+nmake clean 
+
+## ToDo
 - [ ] Rewrite logic function to not allow fruits to spawn on the snake
