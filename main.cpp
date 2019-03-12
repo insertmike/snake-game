@@ -5,11 +5,10 @@
 #include <time.h>
 #include <fstream>
 #include <string>
+
+#include "main.h"
 using namespace std;
-void Setup();
-void Draw();
-void Input();
-void Logic();
+
 bool gameOver;
 // Game mode -> 0 - easy, 1 - hard 
 bool gameMode;
@@ -41,50 +40,114 @@ int modeX, modeY;
 eDirection dir;
 int main(int argc, char **argv)
 {
-	cout<<"Enter desired map width: ";
-	cin>>width; cout<<endl;
-	cout<<"Enter desired map height: ";
-	cin>>height; cout<<endl;
-	int flag = 1;
-	while(flag)
-	{
-	cout<<"Game modes:"<<endl;
-	cout<<"0 - EASY"<<endl;
-	cout<<"1 - HARD"<<endl;
-	cout<<"Enter game mode: ";
-	int buffer;
-	cin>>buffer;
-	if(buffer == 0)
-	{
-		cout<<"horray";
-		gameMode = 0;
-		flag = false;
-		break;
-	}
-	if(buffer == 1)
-	{
-		cout<<"horray1";
-		gameMode = 1;
-		flag = false;
-		break;
-	}
-	else
-		cout<<"Invalid input"<<endl;
-	    cout<<"Please try again"<<endl;
-	}
-	srand(time(0));
-	system("cls");
-	Setup();
-	while(!gameOver)
-	{
-		Draw();
-		Input();
-		Logic();
-	    Sleep(100);
-	}
-	cout<<"Exiting ..."<<endl;
-	return 0;
+   DecideMapDimensions();
+
+   gameMode = DecideGameMode();
+
+   srand(time(0));
+   //system("cls");
+   Setup();
+   while (!gameOver)
+   {
+      //Draw();
+      //Input();
+      //Logic();
+      //Sleep(100);
+   }
+   cout<<"Exiting ..."<<endl;
+   return 0;
 }
+
+void DecideMapDimensions()
+{
+   bool widthDecided(false);
+   bool heightDecided(false);
+   while (!widthDecided || !heightDecided)
+   {
+      if (!widthDecided)
+      {
+         cout << "Enter desired map width: ";
+         cin >> width;
+         cout << endl;
+         if (!cin.good())
+         {
+            cout << "Value entered for width is invalid. Please enter a number." << endl;
+            cin.clear();
+            cin.ignore(INT_MAX, '\n');
+            continue;
+         }
+         else
+         {
+            widthDecided = true;
+         }
+      }
+
+      if (!heightDecided)
+      {
+         cout << "Enter desired map height: ";
+         cin >> height;
+         cout << endl;
+         if (!cin.good())
+         {
+            cout << "Value entered for height is invalid. Please enter a number." << endl;
+            cin.clear();
+            cin.ignore(INT_MAX, '\n');
+            continue;
+         }
+         else
+         {
+            heightDecided = true;
+         }
+      }
+
+   }
+}
+
+eGameMode DecideGameMode()
+{
+   // Default to easy
+   eGameMode gameMode = eGameMode::eGM_Easy;
+   bool gameModeDecided(false);
+   while (!gameModeDecided)
+   {
+      cout << "Game modes:" << endl;
+      cout << "0 - EASY" << endl;
+      cout << "1 - HARD" << endl;
+      cout << "Enter game mode: ";
+      int buffer;
+      cin >> buffer;
+      if (!cin.good())
+      {
+         cout << "Value entered for game mode is invalid." << endl;
+         cin.clear();
+         cin.ignore(INT_MAX, '\n');
+         continue;
+      }
+      else
+      {
+         // Use the switch and the enum for readability.
+         // It also makes adding new game modes a little
+         // easier to do
+         switch (buffer)
+         {
+            case eGM_Easy:
+               gameModeDecided = true;
+               gameMode = eGM_Easy;
+               break;
+            case eGM_Hard:
+               gameModeDecided = true;
+               gameMode = eGM_Hard;
+               break;
+            default:
+               cout << "Invalid input: " << buffer << endl;
+               cout << "Please try again" << endl;
+               break;
+         }
+      }
+   }
+   return gameMode;
+}
+
 int readHighestScore()
 {
 	int buffer = 0;
