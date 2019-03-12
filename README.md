@@ -8,7 +8,7 @@ A command-line version of the snake game written in C++ .
 - Player has highest score which is stored in a .o file 
 - The game has two modes -
        - Easy: Wall collisions allowed
-	   - Hard: If wall collision - Game Over
+       - Hard: If wall collision - Game Over
 - Try again function 
 ## Build: 
 _Game is tested and written on Windows OS with the Microsoft Visual Studio Compiler_
