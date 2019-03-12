@@ -3,15 +3,19 @@
 #include <windows.h>
 #include <stdio.h>
 #include <time.h>
+#include <fstream>
+#include <string>
 using namespace std;
 void Setup();
 void Draw();
 void Input();
 void Logic();
 bool gameOver;
+// Game mode -> 0 - easy, 1 - hard 
+bool gameMode;
 // Map dimensions
-const int width = 20;
-const int height = 20;
+ int width = 5;
+ int height = 5;
 // Head position coordinates
 int x,y;
 // Fruit position coordinates
@@ -22,6 +26,8 @@ int tailX[100], tailY[100];
 int lentail;
 // Score variable
 int score;
+// Highest score variable
+int highestScore = 0;
 // Enum to track direction
 enum eDirection{ 
 	STOP = 0,
@@ -30,10 +36,42 @@ enum eDirection{
 	UP,
 	DOWN
 };
+int modeX, modeY;
 // Holds the direction of the snake 
 eDirection dir;
 int main(int argc, char **argv)
 {
+	cout<<"Enter desired map width: ";
+	cin>>width; cout<<endl;
+	cout<<"Enter desired map height: ";
+	cin>>height; cout<<endl;
+	int flag = 1;
+	while(flag)
+	{
+	cout<<"Game modes:"<<endl;
+	cout<<"0 - EASY"<<endl;
+	cout<<"1 - HARD"<<endl;
+	cout<<"Enter game mode: ";
+	int buffer;
+	cin>>buffer;
+	if(buffer == 0)
+	{
+		cout<<"horray";
+		gameMode = 0;
+		flag = false;
+		break;
+	}
+	if(buffer == 1)
+	{
+		cout<<"horray1";
+		gameMode = 1;
+		flag = false;
+		break;
+	}
+	else
+		cout<<"Invalid input"<<endl;
+	    cout<<"Please try again"<<endl;
+	}
 	srand(time(0));
 	system("cls");
 	Setup();
@@ -44,9 +82,24 @@ int main(int argc, char **argv)
 		Logic();
 	    Sleep(100);
 	}
+	cout<<"Exiting ..."<<endl;
 	return 0;
 }
-
+int readHighestScore()
+{
+	int buffer = 0;
+	// Open the file
+	ifstream file("highestScore.o");
+	if(!file)
+	{
+		return 0;
+	}
+	file>>buffer;
+	file.close();
+	return buffer;
+	
+	// 
+}
 void Setup()
 {
 	gameOver = false;
@@ -103,7 +156,17 @@ void Draw()
 					cout<<" "; 
 			}
 			if(j == width - 1)
-				cout<<"#";		
+				cout<<"#";	
+			// Display game mode of the right hand side of center the map
+			if(j == width - 1 && i == height / 2)
+			{
+				// Display game mode 
+				if(gameMode)
+					cout<<"        GAME MODE: HARD";
+				else
+					cout<<"        GAME MODE: EASY";
+				
+			}
 		}
 		cout<<endl;
 	}
@@ -114,7 +177,10 @@ void Draw()
 	cout<<endl;
 	cout<<"HEAD X = "<<x<<" Y = "<<y<<endl;
 	cout<<"FRUIT X = "<<fruitX<<"Y = "<<fruitY<<endl;
-	cout<<"Score: "<<score;
+	cout<<"Score: "<<score<<endl;
+	highestScore = readHighestScore();
+	cout<<"Highest Score: "<<highestScore<<endl;
+	
 }
 void Input()
 {
@@ -201,9 +267,13 @@ void Logic()
 		default:
 			break;
 	}
-	if(x >= width || x < 0 || y >= height || y < 0)
+	if(gameMode)
 	{
-		//gameOver = true;
+		if(x >= width || x < 0 || y >= height || y < 0)
+		{
+		gameOver = true;
+		
+		}
 	}
 	if(x >= width)
 		x = 0;
@@ -226,6 +296,12 @@ void Logic()
 	if(x == fruitX && y == fruitY)
 	{
 		score++;
+		if(score > highestScore)
+			highestScore = score;
+			// Update highest score in the file
+			ofstream scoreFile("highestScore.o");
+			scoreFile << to_string(highestScore);
+			scoreFile.close();
 		lentail++;
 		fruitX = rand() % width;
 		fruitY = rand() % height;
