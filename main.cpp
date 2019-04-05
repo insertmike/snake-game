@@ -10,24 +10,34 @@
 using namespace std;
 
 bool gameOver;
-// Game mode -> 0 - easy, 1 - hard 
+
+// Game mode | 0 == EASY, 1 == HARD
 bool gameMode;
+
 // Map dimensions
  int width = 5;
  int height = 5;
+
 // Head position coordinates
 int x,y;
+
 // Fruit position coordinates
 int fruitX, fruitY;
-// Tail
+
+// Array of memory for tail positions
 int tailX[100], tailY[100];
+
 // Length of the tail
 int lentail;
-// Score variable
+
+// Current score 
 int score;
-// Highest score variable
+
+// Highest score 
 int highestScore = 0;
-// Enum to track direction
+
+// Enum holding the current direction of the snake head
+// By default it is 0
 enum eDirection{ 
 	STOP = 0,
 	LEFT,
@@ -35,29 +45,45 @@ enum eDirection{
 	UP,
 	DOWN
 };
-int modeX, modeY;
-// Holds the direction of the snake 
+
+// Current direction of snake head | Left, Right, Up, Down or Stop
 eDirection dir;
 int main(int argc, char **argv)
 {
-   DecideMapDimensions();
 
+	// Prompt user for map dimensions X -> Width , Y -> Height
+   DecideMapDimensions();
+   // Prompt user to decide a game mode, Easy or Hard
    gameMode = DecideGameMode();
 
+   
    srand(time(0));
-   //system("cls");
+   // Clear console to Draw on clear screen
+   system("cls");
+   // Setting up initial settings of the game
    Setup();
+   // Running game until game over
    while (!gameOver)
    {
-      //Draw();
-      //Input();
-      //Logic();
-      //Sleep(100);
+      Draw();
+      Input();
+      Logic();
+      Sleep(100);
    }
    cout<<"Exiting ..."<<endl;
+   // Closing the window slightly after the game has finisheed
+   Sleep(800);
    return 0;
 }
-
+/**
+ * Method: DecideMapDimensions()
+ * ------------------------
+ * Method which prompts the user to enter width and height values
+ * for the matrix of the snake. 
+ *
+ * @type: void
+ *
+*/
 void DecideMapDimensions()
 {
    bool widthDecided(false);
@@ -102,12 +128,21 @@ void DecideMapDimensions()
 
    }
 }
-
+/**
+ * Enumerator : DecideGameMode
+ * ------------------------
+ * Used initially in the start of the game for the user to enter
+ * which game mode he would like to play
+ *
+ * @type: enum
+ *
+*/
 eGameMode DecideGameMode()
 {
    // Default to easy
    eGameMode gameMode = eGameMode::eGM_Easy;
    bool gameModeDecided(false);
+   // Prompt for game mode until decided
    while (!gameModeDecided)
    {
       cout << "Game modes:" << endl;
@@ -148,21 +183,44 @@ eGameMode DecideGameMode()
    return gameMode;
 }
 
+/**
+ * Method: readHighestScore()
+ * ------------------------
+ * Method which tries to open the 'highestScore.o', 
+ * read the value stored inside into a variable of 
+ * type int and return it
+ *
+ * @type: int
+ *
+ * @return buffer, the value read from the highest score file
+ *
+*/
 int readHighestScore()
 {
+	// Buffer to read highest score in
 	int buffer = 0;
-	// Open the file
+	// Open highest score file
 	ifstream file("highestScore.o");
-	if(!file)
+	// Check if opened successfully 
+	if (!file)
 	{
 		return 0;
 	}
-	file>>buffer;
+	// Read highest score into the buffer
+	file >> buffer;
+	// Close the file
 	file.close();
+	// Return highest score
 	return buffer;
-	
-	// 
 }
+/**
+ * Method: Setup()
+ * ------------------------
+ * Setting up the initial settings for the game.
+ *
+ * @type: void
+ *
+*/
 void Setup()
 {
 	gameOver = false;
@@ -177,10 +235,22 @@ void Setup()
 	fruitY = rand() % height;
 	
 }
+/**
+ * Method: Draw()
+ * ------------------------
+ * Drawing the matrix for the game with:
+ * - the snake head, tail && fruit 
+ * - the Game Mode | Aside the Matrix
+ * - the current X && Y position of the snake head
+ * - the current highest score
+ *
+ * @type: void
+ *
+*/
 void Draw()
 {
-	// Clear the screen
-	//system("cls");
+	// The next 5 lines of code handle the way the matrix displays on the loop by 
+	// handling the position of the cursor. Prevents output from blinking.
 	HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
 	COORD Position;
 	
@@ -188,6 +258,7 @@ void Draw()
 	Position.Y = 0;
 	
 	SetConsoleCursorPosition(hOut, Position);
+
 	// Print top wall 
 	for(int i = 0; i < width + 2; i++)
 		cout<<"#";
@@ -202,11 +273,13 @@ void Draw()
 			// Printing the head 
 			if( i == y && j == x)
 				cout<<"O";
+			// If reached fruit indexes, print fruit
 			else if(i == fruitY && j == fruitX)
 				cout<<"F";
 			else 
 			{
 				bool print = false;
+				// Printing snake tail
 				 for(int k = 0; k < lentail; k++)
 				 {
 					if(tailX[k] == j && tailY[k] == i)
@@ -215,6 +288,7 @@ void Draw()
 						 print = true;
 					}
 				 }
+				 // If not printing snake or fruit, print whitespace 
 				if(!print)
 					cout<<" "; 
 			}
@@ -238,13 +312,25 @@ void Draw()
 	for(int i = 0; i < width + 2; i++)
 		cout<<"#";
 	cout<<endl;
+	// Print snake current coordinates
 	cout<<"HEAD X = "<<x<<" Y = "<<y<<endl;
 	cout<<"FRUIT X = "<<fruitX<<"Y = "<<fruitY<<endl;
+	// Print current score
 	cout<<"Score: "<<score<<endl;
+	// Read and print highest score
 	highestScore = readHighestScore();
 	cout<<"Highest Score: "<<highestScore<<endl;
 	
 }
+/**
+ * Method: Input()
+ * ------------------------
+ * Check if one of the game keyboard keys is pressed 
+ * and updates the direction of the snake
+ *
+ * @type: void
+ *
+*/
 void Input()
 {
 	// If keyboard key is pressed 
@@ -294,6 +380,19 @@ void Input()
 	
 	}
 }
+/**
+ * Method: Logic()
+ * ------------------------
+ * Implements the logic of :
+ * - how the tail coordinates are being updated ( pointers )
+ * - determinate the head of the snake direction based on the output
+ *   from the Input() function
+ * - checks if the game is over based on the game mode
+ * - updates if there is a new high score and writes it to the 'highestScore.o'
+ *
+ * @type: void
+ *
+*/
 void Logic()
 {
 
@@ -304,6 +403,7 @@ void Logic()
 	int ptail2X, ptail2Y;
 	tailX[0] = x;
 	tailY[0] = y;
+	// Update tail indexes
 	for(int i = 1; i < lentail; i++)
 	{
 		ptail2X = tailX[i];
@@ -332,12 +432,15 @@ void Logic()
 	}
 	if(gameMode)
 	{
+		// Check if snake coordinates are greater than matrix coordinates
 		if(x >= width || x < 0 || y >= height || y < 0)
 		{
+		// Snake coordinates are greater, set game over to true
 		gameOver = true;
 		
 		}
 	}
+	// The possibility for the snake to go through walls
 	if(x >= width)
 		x = 0;
 	else if(x < 0) 
@@ -356,6 +459,10 @@ void Logic()
 			gameOver = true;
 		}
 	}
+	// If head of the snake equals fruit coordinates:
+	// - Update score
+	// - Update length of the tail
+	// - Seed new fruit
 	if(x == fruitX && y == fruitY)
 	{
 		score++;
